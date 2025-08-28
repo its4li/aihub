@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="داشبورد هوش مصنوعی قدرتمند با پشتیبانی از مدل‌های مختلف Hugging Face">
+    <meta name="keywords" content="هوش مصنوعی, چت بات, AI, Hugging Face, فارسی">
+    <meta name="author" content="AI Dashboard">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="داشبورد هوش مصنوعی">
+    <meta property="og:description" content="چت با مدل‌های مختلف هوش مصنوعی">
+    <meta property="og:type" content="website">
+    
+    <title>داشبورد هوش مصنوعی | AI Dashboard</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>در حال بارگذاری...</h2>
+            <p>داشبورد هوش مصنوعی</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <div class="logo-text">
+                        <h1>AI Dashboard</h1>
+                        <span>داشبورد هوش مصنوعی</span>
+                    </div>
+                </div>
+                
+                <div class="header-controls">
+                    <!-- Connection Status -->
+                    <div class="connection-status" id="connectionStatus">
+                        <i class="fas fa-circle"></i>
+                        <span>آفلاین</span>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <!-- Model Selector -->
+                    <div class="model-selector">
+                        <select id="modelSelect" class="model-select" title="انتخاب مدل">
+                            <option value="microsoft/DialoGPT-medium">DialoGPT Medium</option>
+                            <option value="facebook/blenderbot-400M-distill">BlenderBot</option>
+                            <option value="microsoft/DialoGPT-large">DialoGPT Large</option>
+                            <option value="google/flan-t5-large">Flan-T5 Large</option>
+                            <option value="Helsinki-NLP/opus-mt-en-fa">مترجم انگلیسی-فارسی</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalChats">0</h3>
+                        <p>مکالمات انجام شده</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="currentModel">DialoGPT</h3>
+                        <p>مدل فعال</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="responseTime">0ms</h3>
+                        <p>زمان پاسخ</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="apiStatus">آماده</h3>
+                        <p>وضعیت API</p>
+                    </div>
+                    <div class="stat-trend">
+                        <i class="fas fa-signal"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="chat-title">
+                        <h2>چت با هوش مصنوعی</h2>
+                        <span class="chat-subtitle">پشتیبانی از مدل‌های مختلف Hugging Face</span>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="action-btn" id="exportChat" title="خروجی گرفتن از چت">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="action-btn" id="clearChat" title="پاک کردن چت">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <div class="welcome-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>به داشبورد هوش مصنوعی خوش آمدید!</h3>
+                        <p>من آماده کمک به شما هستم. سوال خود را بپرسید یا از قابلیت‌های مختلف استفاده کنید.</p>
+                        <div class="quick-actions">
+                            <button class="quick-btn" data-message="سلام! چطوری؟">
+                                <i class="fas fa-hand-wave"></i>
+                                سلام
+                            </button>
+                            <button class="quick-btn" data-message="می‌تونی درباره خودت بگی؟">
+                                <i class="fas fa-question"></i>
+                                درباره تو
+                            </button>
+                            <button class="quick-btn" data-message="چه کارهایی می‌تونی انجام بدی؟">
+                                <i class="fas fa-list"></i>
+                                قابلیت‌ها
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <div class="input-wrapper">
+                        <button class="attachment-btn" id="attachmentBtn" title="ضمیمه فایل">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <input type="text" id="messageInput" placeholder="پیام خود را اینجا بنویسید..." maxlength="1000" autocomplete="off">
+                        <button id="sendButton" class="send-button" title="ارسال پیام">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="input-info">
+                        <div class="input-stats">
+                            <span id="charCount">0/1000</span>
+                            <span class="separator">•</span>
+                            <span id="wordCount">0 کلمه</span>
+                        </div>
+                        <div class="loading" id="loadingIndicator" style="display: none;">
+                            <div class="typing-indicator">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span>در حال تایپ...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Settings -->
+            <div class="settings-container">
+                <div class="settings-header" id="settingsHeader">
+                    <div class="settings-title">
+                        <h2>تنظیمات پیشرفته</h2>
+                        <span class="settings-subtitle">پیکربندی API و مدل‌ها</span>
+                    </div>
+                    <button class="toggle-settings" id="toggleSettings">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                
+                <div class="settings-content" id="settingsContent">
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label for="apiKey">
+                                <i class="fas fa-key"></i>
+                                کلید API هاگینگ فیس
+                            </label>
+                            <div class="input-with-action">
+                                <input type="password" id="apiKey" placeholder="hf_xxxxxxxxxxxxxxxxx">
+                                <button class="toggle-password" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <small>
+                                برای دریافت کلید API رایگان به 
+                                <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">
+                                    این لینک
+                                </a> 
+                                مراجعه کنید
+                            </small>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label for="maxTokens">
+                                <i class="fas fa-text-width"></i>
+                                حداکثر طول پاسخ
+                            </label>
+                            <div class="range-input">
+                                <input type="range" id="maxTokens" min="50" max="1000" value="200" step="50">
+                                <span id="tokenValue">200</span>
+                            </div>
+                            <small>تعداد کلمات تولیدی در هر پاسخ</small>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label for="temperature">
+                                <i class="fas fa-thermometer-half"></i>
+                                میزان خلاقیت
+                            </label>
+                            <div class="range-input">
+                                <input type="range" id="temperature" min="0.1" max="1.0" step="0.1" value="0.7">
+                                <span id="tempValue">0.7</span>
+                            </div>
+                            <small>عدد بالاتر = پاسخ‌های خلاقانه‌تر</small>
+                        </div>
+
+                        <div class="setting-group">
+                            <label for="language">
+                                <i class="fas fa-language"></i>
+                                زبان ترجیحی
+                            </label>
+                            <select id="language" class="setting-select">
+                                <option value="fa">فارسی</option>
+                                <option value="en">English</option>
+                                <option value="auto">تشخیص خودکار</option>
+                            </select>
+                            <small>زبان پیش‌فرض برای پاسخ‌ها</small>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="btn btn-primary" id="testConnection">
+                            <i class="fas fa-plug"></i>
+                            تست اتصال
+                        </button>
+                        <button class="btn btn-secondary" id="resetSettings">
+                            <i class="fas fa-undo"></i>
+                            بازنشانی
+                        </button>
+                        <button class="btn btn-success" id="saveSettings">
+                            <i class="fas fa-save"></i>
+                            ذخیره تنظیمات
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="features-container">
+                <h2 class="section-title">قابلیت‌های ویژه</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h3>ترجمه هوشمند</h3>
+                        <p>ترجمه متون بین زبان‌های مختلف با دقت بالا</p>
+                        <button class="feature-btn" data-feature="translate">
+                            امتحان کنید
+                        </button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-compress-alt"></i>
+                        </div>
+                        <h3>خلاصه‌سازی متن</h3>
+                        <p>خلاصه‌سازی مقالات و متون طولانی</p>
+                        <button class="feature-btn" data-feature="summarize">
+                            امتحان کنید
+                        </button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>تحلیل احساسات</h3>
+                        <p>تشخیص احساسات و عواطف در متن</p>
+                        <button class="feature-btn" data-feature="sentiment">
+                            امتحان کنید
+                        </button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <h3>پرسش و پاسخ</h3>
+                        <p>پاسخ به سوالات بر اساس متن ارائه شده</p>
+                        <button class="feature-btn" data-feature="qa">
+                            امتحان کنید
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>داشبورد هوش مصنوعی</h3>
+                    <p>پلتفرم قدرتمند برای تعامل با مدل‌های مختلف هوش مصنوعی</p>
+                </div>
+                <div class="footer-section">
+                    <h4>لینک‌های مفید</h4>
+                    <ul>
+                        <li><a href="https://huggingface.co" target="_blank">Hugging Face</a></li>
+                        <li><a href="https://github.com" target="_blank">GitHub</a></li>
+                        <li><a href="https://vercel.com" target="_blank">Vercel</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>تماس با ما</h4>
+                    <div class="social-links">
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 داشبورد هوش مصنوعی - تمامی حقوق محفوظ است</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/theme.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
